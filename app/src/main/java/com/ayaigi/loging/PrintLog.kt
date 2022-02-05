@@ -1,12 +1,6 @@
 package com.ayaigi.loging
 
 
-enum class PrintLogIds(id: Int) {
-    Fox(0),
-    Bee(1),
-    Dog(2)
-}
-
 /**
  * initialise once
  */
@@ -25,7 +19,7 @@ class PrintLog {
         private fun Float.format(precision: Int): String = "%.${precision}f".format(this)
     }
 
-    inner class Session() {
+    inner class Session internal constructor() {
         private var length = 0
         private var labels: List<String> = listOf()
         private val values: MutableList<List<Float>> = mutableListOf()
