@@ -19,7 +19,7 @@ class PrintLog {
         private fun Float.format(precision: Int): String = "%.${precision}f".format(this)
     }
 
-    inner class Session internal constructor() {
+    inner class Session {
         private var length = 0
         private var labels: List<String> = listOf()
         private val values: MutableList<List<Float>> = mutableListOf()
@@ -41,9 +41,9 @@ class PrintLog {
                 values.add(items.asList())
             } else throw InvalidLengthException(items.size, length)
         }
-        fun print(precision: Int = prec, separator: String = del) {
+        fun print(label: String = "", precision: Int = prec, separator: String = del) {
             println("----")
-            println("Session:")
+            println("Session: $label")
             println(labels.joinToString(separator = separator))
             for (v in values) {
                 println(v.joinToString(separator = separator) { it.format(precision) })
