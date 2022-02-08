@@ -1,16 +1,9 @@
 package com.ayaigi.loging
 
+import java.io.File
 
-/**
- * initialise once
- */
-class PrintLog {
-    val Fox = Session()
-    val Bee = Session()
-    val Dog = Session()
-    val Cat = Session()
-    val Cow = Session()
 
+class PrintLog(private val LogLabel: String = "PrintLog", vararg labels: String) {
     companion object {
         class InvalidLengthException(Is: Int, Should: Int) : Exception("is: $Is; should: $Should")
 
@@ -19,36 +12,41 @@ class PrintLog {
         private fun Float.format(precision: Int): String = "%.${precision}f".format(this)
     }
 
-    inner class Session {
-        private var length = 0
-        private var labels: List<String> = listOf()
-        private val values: MutableList<List<Float>> = mutableListOf()
-        fun init(labels: List<String>){
-            this.labels = labels
-            this.length = labels.size
-            this.values.clear()
+    private var length = 0
+    private val labels: List<String> = labels.toList()
+    private val values: MutableList<List<Float>> = mutableListOf()
+
+    fun add(items: List<Float>) {
+        if (items.size == length) {
+            values.add(items)
+        } else throw InvalidLengthException(items.size, length)
+    }
+
+    fun add(vararg items: Float) {
+        if (items.size == length) {
+            values.add(items.asList())
+        } else throw InvalidLengthException(items.size, length)
+    }
+
+    fun printLog(precision: Int = prec, separator: String = del) {
+        println("----")
+        println("Session: $LogLabel")
+        println(labels.joinToString(separator = separator))
+        for (v in values) {
+            println(v.joinToString(separator = separator) { it.format(precision) })
         }
-        fun init(vararg labels: String){
-            init(labels.asList())
+        println("----")
+    }
+
+    /**
+     * Dir: "C:\\Users\\aikee\\Desktop\\StudioBin\\$filename")
+     */
+    fun printToFile(filename: String, precision: Int = prec, separator: String = del) {
+        val ln = "\n"
+        var content = labels.joinToString(separator = separator)
+        for (v in values) {
+            content += (ln + v.joinToString(separator = separator) { it.format(precision) })
         }
-        fun add(items: List<Float>) {
-            if (items.size == length) {
-                values.add(items)
-            } else throw InvalidLengthException(items.size, length)
-        }
-        fun add(vararg items: Float) {
-            if (items.size == length) {
-                values.add(items.asList())
-            } else throw InvalidLengthException(items.size, length)
-        }
-        fun print(label: String = "", precision: Int = prec, separator: String = del) {
-            println("----")
-            println("Session: $label")
-            println(labels.joinToString(separator = separator))
-            for (v in values) {
-                println(v.joinToString(separator = separator) { it.format(precision) })
-            }
-            println("----")
-        }
+        File("C:\\Users\\aikee\\Desktop\\StudioBin\\$filename").writeText(content)
     }
 }
