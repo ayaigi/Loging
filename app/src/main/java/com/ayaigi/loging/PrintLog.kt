@@ -3,7 +3,7 @@ package com.ayaigi.loging
 import java.io.File
 
 
-class PrintLog(private val LogLabel: String = "PrintLog", vararg labels: String) {
+class PrintLog(vararg labels: String) {
     companion object {
         class InvalidLengthException(Is: Int, Should: Int) : Exception("is: $Is; should: $Should")
 
@@ -12,8 +12,8 @@ class PrintLog(private val LogLabel: String = "PrintLog", vararg labels: String)
         private fun Float.format(precision: Int): String = "%.${precision}f".format(this)
     }
 
-    private var length = 0
     private val labels: List<String> = labels.toList()
+    private var length = labels.size
     private val values: MutableList<List<Float>> = mutableListOf()
 
     fun add(items: List<Float>) {
@@ -30,7 +30,7 @@ class PrintLog(private val LogLabel: String = "PrintLog", vararg labels: String)
 
     fun printLog(precision: Int = prec, separator: String = del) {
         println("----")
-        println("Session: $LogLabel")
+        println("Session")
         println(labels.joinToString(separator = separator))
         for (v in values) {
             println(v.joinToString(separator = separator) { it.format(precision) })
